@@ -93,7 +93,7 @@ EOF
     popd
 
     pushd data
-    # which strip >/dev/null 2>&1 && strip ./usr/bin/*
+    which strip >/dev/null 2>&1 && strip ./usr/bin/*
     which upx >/dev/null 2>&1 && upx ./usr/bin/*
     tar cvzf ../data.tar.gz ./*
     popd
@@ -107,7 +107,7 @@ pack_clean() {
 }
 
 prepare() {
-    apt update && apt install -y upx
+    sudo apt update && sudo apt install -y upx
 }
 
 move_to_publish() {
