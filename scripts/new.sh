@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#!/bin/bash
+echo "PACKAGE_OUTPUT_PATH=" $PACKAGE_OUTPUT_PATH
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 cd $SCRIPT_DIR
