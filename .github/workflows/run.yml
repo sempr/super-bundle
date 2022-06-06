@@ -1,0 +1,37 @@
+name: Build mosdns ipk
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "1 22 * * 2"
+  push:
+    branches:
+      - "master"
+    paths-ignore:
+      - "**/README.md"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the "master" branch of this repo
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: tree
+        run: |
+          echo "TAG_NAME=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+          echo "RELEASE_NAME=Released on $(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+          tree
+      - name: build bundle
+        run: scripts/new.sh
+        shell: bash
+      - name: Release and upload assets
+        uses: softprops/action-gh-release@v0.1.6
+        with:
+          name: ${{ env.RELEASE_NAME }}
+          tag_name: ${{ env.TAG_NAME }}
+          draft: false
+          prerelease: false
+          files: |
+            ${{ env.PACKAGE_OUTPUT_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
