@@ -1,4 +1,4 @@
-name: Build mosdns ipk
+name: Build superbundle ipk
 on:
   workflow_dispatch:
   schedule:
