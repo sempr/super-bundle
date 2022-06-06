@@ -24,11 +24,16 @@ jobs:
       - name: build bundle
         run: bash -x scripts/new.sh
         shell: bash
+      - name: check new
+        run: |
+          echo "NEED_PUB=$(diff scripts/old.sha256sum.txt scripts/sha256sum.txt >/dev/null 2>&1 || echo 1)" >> $GITHUB_ENV
+        shell: bash
       - name: Release and upload assets
         uses: softprops/action-gh-release@v0.1.6
         with:
           name: ${{ env.RELEASE_NAME }}
           tag_name: ${{ env.TAG_NAME }}
+          if: ${{ env.NEED_PUB == "1" }}
           draft: false
           prerelease: false
           files: |

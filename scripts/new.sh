@@ -48,6 +48,11 @@ download_hysteria() {
     mv hysteria-linux-amd64 hysteria
 }
 
+download_old() {
+    DOWNLOAD_URL=$(curl -L -fsS "https://github.com/sempr/super-bundle/releases/latest" | grep "sha256sum.txt" | grep href | awk -F'"' '{print $2}')
+    curl -fsS -L -o old.sha256sum.txt "https://github.com${DOWNLOAD_URL}"
+}
+
 download_all() {
     mkdir -p tmp
     pushd tmp
@@ -68,6 +73,7 @@ download_all() {
     rm -rf tmp/
 
     tree data/
+    download_old
     sha256sum data/usr/bin/* >sha256sum.txt
 }
 
@@ -87,7 +93,7 @@ EOF
     popd
 
     pushd data
-    which strip >/dev/null 2>&1 && strip ./usr/bin/*
+    # which strip >/dev/null 2>&1 && strip ./usr/bin/*
     which upx >/dev/null 2>&1 && upx ./usr/bin/*
     tar cvzf ../data.tar.gz ./*
     popd
