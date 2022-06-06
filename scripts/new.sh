@@ -53,6 +53,10 @@ download_old() {
     curl -fsS -L -o old.sha256sum.txt "https://github.com${DOWNLOAD_URL}"
 }
 
+download_mmdb() {
+    curl -fsSLO https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb
+}
+
 download_all() {
     mkdir -p tmp
     pushd tmp
@@ -62,13 +66,15 @@ download_all() {
     download_clashpro
     download_wstunnel
     download_mosdns
+    download_mmdb
     popd
 
-    mkdir -p data/etc/geodata
+    mkdir -p data/etc/{geodata,clash}
     mkdir -p data/usr/bin
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
     mv tmp/{xray,clash,wstunnel,hysteria,mosdns/mosdns} data/usr/bin/
+    mv tmp/Country.mmdb data/etc/clash/
     chmod +x data/usr/bin/*
     rm -rf tmp/
 
