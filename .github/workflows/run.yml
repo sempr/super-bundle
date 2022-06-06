@@ -10,7 +10,7 @@ on:
       - "**/README.md"
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout the "master" branch of this repo
         uses: actions/checkout@v2
