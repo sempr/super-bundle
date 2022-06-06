@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "PACKAGE_OUTPUT_PATH=" $PACKAGE_OUTPUT_PATH
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 cd $SCRIPT_DIR
 
@@ -106,9 +104,16 @@ prepare() {
     apt update && apt install -y upx
 }
 
+move_to_publish() {
+    mkdir -p /tmp/pub
+    cp super-bundle_1.0-${TAG_NAME}.ipk /tmp/pub/
+    cp sha256sum.txt /tmp/pub/
+}
+
 prepare
 download_all
 pack
 pack_clean
+move_to_publish
 
 exit 0
