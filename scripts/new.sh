@@ -30,7 +30,7 @@ download_clashpro() {
 }
 
 download_mosdns() {
-    DOWNLOAD_URL=$(curl -fsS -L https://github.com/IrineSistiana/mosdns/releases/latest | grep mosdns-linux-amd64 | head -1 | awk -F"\"" '{print $2}')
+    DOWNLOAD_URL=$(curl -fsS -L https://github.com/sempr/mosdns/releases/latest | grep mosdns-linux-amd64 | head -1 | awk -F"\"" '{print $2}')
     curl -fsS -OL "https://github.com${DOWNLOAD_URL}"
     mkdir -p mosdns
     unzip -o mosdns-linux-amd64.zip -d mosdns
