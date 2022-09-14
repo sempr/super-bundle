@@ -12,7 +12,7 @@ download_geodata() {
 
 download_xray() {
     FILES=$(curl -fsS -L https://api.github.com/repos/XTLS/Xray-core/releases/latest | jq | grep browser_download_url | grep "Xray-linux-64.zip\"" | awk '{print $2}' | tr -d '"')
-    curl -OL https://api.github.com/repos/$FILES
+    curl -OL $FILES
     unzip -o Xray-linux-64.zip
 }
 
