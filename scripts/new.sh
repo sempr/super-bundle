@@ -4,27 +4,27 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 cd $SCRIPT_DIR
 
 download_geodata() {
-    FILES=$(curl -fsS -L https://github.com/leemars/v2ray-rules-dat/releases/latest | grep "\.dat\"" | grep "releases/download" | awk -F"href=\"" '{print $2}' | awk -F"\"" '{print $1}')
+    FILES=$(curl -fsS -L https://api.github.com/repos/leemars/v2ray-rules-dat/releases/latest | grep "\.dat\"" | grep "releases/download" | awk '{print $2}' | tr -d '"')
     for file in $FILES; do
-        curl -OL https://github.com$file
+        curl -OL $file
     done
 }
 
 download_xray() {
-    FILES=$(curl -fsS -L https://github.com/XTLS/Xray-core/releases/latest | grep "Xray-linux-64.zip\"" | awk -F"href=\"" '{print $2}' | awk -F"\"" '{print $1}')
-    curl -OL https://github.com/$FILES
+    FILES=$(curl -fsS -L https://api.github.com/repos/XTLS/Xray-core/releases/latest | jq | grep browser_download_url | grep "Xray-linux-64.zip\"" | awk '{print $2}' | tr -d '"')
+    curl -OL https://api.github.com/repos/$FILES
     unzip -o Xray-linux-64.zip
 }
 
 download_clash() {
-    DOWNLOAD_URL=$(curl -fsS -L https://github.com/Dreamacro/clash/releases/latest | grep "clash-linux-amd64" | awk -F"href=\"" '{print $2}' | awk -F"\"" '{print $1}')
-    curl -L -o clash.gz "https://github.com${DOWNLOAD_URL}"
+    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/Dreamacro/clash/releases/latest | jq | grep browser_download_url | grep "clash-linux-amd64" | awk '{print $2}' | tr -d '"' | head -1)
+    curl -L -o clash.gz "${DOWNLOAD_URL}"
     gunzip clash.gz
 }
 
 download_clashpro() {
-    DOWNLOAD_URL=$(curl -fsS -L https://github.com/Dreamacro/clash/releases/premium | grep "clash-linux-amd64" | awk -F"\"" '{print $2}' | head -1 | awk -F"\"" '{print $1}' | tr -d "'")
-    curl -L -o clash.gz "https://github.com${DOWNLOAD_URL}"
+    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/Dreamacro/clash/releases | jq| grep premium | grep browser_download_url | grep linux-amd64 | awk '{print $2}' | head -1 | tr -d '"')
+    curl -L -o clash.gz "${DOWNLOAD_URL}"
     gunzip clash.gz
 
 }
@@ -37,14 +37,14 @@ download_mosdns() {
 }
 
 download_wstunnel() {
-    DOWNLOAD_URL=$(curl -fsS -L https://github.com/erebe/wstunnel/releases/latest | grep wstunnel-x64-linux | head -1 | awk -F"href=\"" '{print $2}' | awk -F"\"" '{print $1}')
-    curl -fsS -OL "https://github.com${DOWNLOAD_URL}"
+    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/erebe/wstunnel/releases/latest | jq| grep browser_download_url | grep wstunnel-x64-linux | head -1 |awk '{print $2}' | tr -d '"')
+    curl -fsS -OL "${DOWNLOAD_URL}"
     mv wstunnel-x64-linux wstunnel
 }
 
 download_hysteria() {
-    DOWNLOAD_URL=$(curl -fsS -L https://github.com/HyNetwork/hysteria/releases/latest | grep hysteria-linux-amd64 | head -1 | awk -F"href=\"" '{print $2}' | awk -F"\"" '{print $1}')
-    curl -fsS -OL "https://github.com${DOWNLOAD_URL}"
+    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/HyNetwork/hysteria/releases/latest |jq| grep browser_download_url | grep hysteria-linux-amd64 | head -1 |awk '{print $2}' | tr -d '"')
+    curl -fsS -OL "${DOWNLOAD_URL}"
     mv hysteria-linux-amd64 hysteria
 }
 
@@ -113,7 +113,7 @@ pack_clean() {
 }
 
 prepare() {
-    sudo apt update && sudo apt install -y upx
+    sudo apt update && sudo apt install -y upx jq
 }
 
 move_to_publish() {
