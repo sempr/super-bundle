@@ -16,17 +16,11 @@ download_xray() {
     unzip -o Xray-linux-64.zip
 }
 
-download_clash() {
-    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/Dreamacro/clash/releases/latest | jq | grep browser_download_url | grep "clash-linux-amd64" | awk '{print $2}' | tr -d '"' | head -1)
-    curl -L -o clash.gz "${DOWNLOAD_URL}"
-    gunzip clash.gz
-}
-
-download_clashpro() {
-    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/Dreamacro/clash/releases | jq| grep premium | grep browser_download_url | grep linux-amd64 | awk '{print $2}' | head -1 | tr -d '"')
-    curl -L -o clash.gz "${DOWNLOAD_URL}"
-    gunzip clash.gz
-
+download_singbox() {
+    DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/SagerNet/sing-box/releases/latest  | jq | grep linux-amd64.tar | grep browser |awk '{print $2}' | tr -d '"')
+    curl -L -o sing-box.tgz "${DOWNLOAD_URL}"
+    tar xvzf sing-box.tgz
+    mv $(find -name sing-box |head -1) .
 }
 
 download_mosdns() {
@@ -53,28 +47,22 @@ download_old() {
     curl -fsS -L -o old.sha256sum.txt "https://github.com${DOWNLOAD_URL}"
 }
 
-download_mmdb() {
-    curl -fsSLO https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb
-}
-
 download_all() {
     mkdir -p tmp
     pushd tmp
     download_hysteria
     download_xray
     download_geodata
-    download_clashpro
+    download_singbox
     download_wstunnel
     download_mosdns
-    download_mmdb
     popd
 
-    mkdir -p data/etc/{geodata,clash}
+    mkdir -p data/etc/geodata
     mkdir -p data/usr/bin
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
-    mv tmp/{xray,clash,wstunnel,hysteria,mosdns/mosdns} data/usr/bin/
-    mv tmp/Country.mmdb data/etc/clash/
+    mv tmp/{xray,sing-box,wstunnel,hysteria,mosdns/mosdns} data/usr/bin/
     chmod +x data/usr/bin/*
     rm -rf tmp/
 
