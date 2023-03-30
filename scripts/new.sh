@@ -31,9 +31,9 @@ download_mosdns() {
 }
 
 download_wstunnel() {
-    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/erebe/wstunnel/releases/latest | jq| grep browser_download_url | grep wstunnel-x64-linux | head -1 |awk '{print $2}' | tr -d '"')
+    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/erebe/wstunnel/releases/latest | jq| grep browser_download_url | grep wstunnel-linux-x64 | head -1 |awk '{print $2}' | tr -d '"')
     curl -fsS -OL "${DOWNLOAD_URL}"
-    mv wstunnel-x64-linux wstunnel
+    mv wstunnel-linux-x64 wstunnel
 }
 
 download_hysteria() {
