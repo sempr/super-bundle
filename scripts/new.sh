@@ -23,6 +23,14 @@ download_singbox() {
     mv $(find -name sing-box |head -1) .
 }
 
+download_clashmeta() {
+    DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/MetaCubeX/Clash.Meta/releases/latest  | jq | grep clash.meta-linux-amd64-compatible | grep browser |awk '{print $2}' | tr -d '"')
+    curl -L -o clash.gz "${DOWNLOAD_URL}"
+    gunzip clash.gz
+    chmod +x clash
+    mv $(find -name clash |head -1) .
+}
+
 download_mosdns() {
     DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/IrineSistiana/mosdns/releases | jq | grep browser_download_url | grep v4 | grep linux-amd64 | head -1 | awk '{print $2}' | tr -d '"')
     curl -fsS -OL "${DOWNLOAD_URL}"
@@ -55,6 +63,7 @@ download_all() {
     download_geodata
     download_singbox
     download_wstunnel
+    download_clashmeta
     download_mosdns
     popd
 
@@ -62,7 +71,7 @@ download_all() {
     mkdir -p data/usr/bin
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
-    mv tmp/{xray,sing-box,wstunnel,hysteria,mosdns/mosdns} data/usr/bin/
+    mv tmp/{xray,sing-box,wstunnel,hysteria,mosdns/mosdns,clash} data/usr/bin/
     chmod +x data/usr/bin/*
     rm -rf tmp/
 
