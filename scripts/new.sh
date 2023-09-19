@@ -49,7 +49,7 @@ download_all() {
     mkdir -p data/www/
 
     mv tmp/yacd data/www/
-    ln -sf clash data/www/
+    ln -sf yacd data/www/clash
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
     ln -sf /etc/geodata/geoip.dat data/etc/clash/
