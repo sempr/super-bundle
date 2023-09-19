@@ -16,6 +16,14 @@ download_clashmeta() {
     mv $(find -name clash |head -1) .
 }
 
+download_yacd() {
+  curl -OL https://github.com/MetaCubeX/Yacd-meta/archive/refs/heads/gh-pages.zip
+  mkdir -p yacd
+  pushd yacd
+    unzip -j ../gh-pages.zip
+  popd
+}
+
 download_mosdns() {
     DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/IrineSistiana/mosdns/releases | jq | grep browser_download_url | grep v4 | grep linux-amd64 | head -1 | awk '{print $2}' | tr -d '"')
     curl -fsS -OL "${DOWNLOAD_URL}"
@@ -34,11 +42,15 @@ download_all() {
     download_geodata
     download_clashmeta
     download_mosdns
+    download_yacd
     popd
 
     mkdir -p data/etc/geodata
     mkdir -p data/usr/bin
     mkdir -p data/etc/clash
+    mkdir -p data/www/
+
+    mv tmp/yacd data/www/
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
     ln -sf /etc/geodata/geoip.dat data/etc/clash/
