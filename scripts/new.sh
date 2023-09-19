@@ -18,7 +18,6 @@ download_clashmeta() {
 
 download_yacd() {
   curl -OL https://github.com/MetaCubeX/Yacd-meta/archive/refs/heads/gh-pages.zip
-  mkdir -p yacd
   unzip gh-pages.zip
   mv Yacd-meta-gh-pages yacd
 }
