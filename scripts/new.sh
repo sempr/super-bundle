@@ -19,9 +19,8 @@ download_clashmeta() {
 download_yacd() {
   curl -OL https://github.com/MetaCubeX/Yacd-meta/archive/refs/heads/gh-pages.zip
   mkdir -p yacd
-  pushd yacd
-    unzip -j ../gh-pages.zip
-  popd
+  unzip gh-pages.zip
+  mv Yacd-meta-gh-pages yacd
 }
 
 download_mosdns() {
@@ -51,6 +50,7 @@ download_all() {
     mkdir -p data/www/
 
     mv tmp/yacd data/www/
+    ln -sf clash data/www/
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
     ln -sf /etc/geodata/geoip.dat data/etc/clash/
