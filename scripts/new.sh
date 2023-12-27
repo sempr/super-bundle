@@ -9,7 +9,7 @@ download_geodata() {
 }
 
 download_clashmeta() {
-    DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/MetaCubeX/Clash.Meta/releases/latest  | jq | grep clash.meta-linux-amd64-compatible | grep browser |awk '{print $2}' | tr -d '"')
+    DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/MetaCubeX/Clash.Meta/releases/latest  | jq |grep linux-amd64-v | grep browser_download_url | awk '{print $2}' | tr -d '"')
     curl -L -o clash.gz "${DOWNLOAD_URL}"
     gunzip clash.gz
     chmod +x clash
