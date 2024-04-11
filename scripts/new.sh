@@ -9,7 +9,7 @@ download_geodata() {
 }
 
 download_clashmeta() {
-    DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/MetaCubeX/Clash.Meta/releases/latest  | jq |grep linux-amd64-v | grep browser_download_url | awk '{print $2}' | tr -d '"')
+    DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/MetaCubeX/Clash.Meta/releases/latest  | jq |grep linux-amd64-v | grep browser_download_url | grep gz | awk '{print $2}' | tr -d '"')
     curl -L -o clash.gz "${DOWNLOAD_URL}"
     gunzip clash.gz
     chmod +x clash
@@ -22,12 +22,22 @@ download_yacd() {
   mv Yacd-meta-gh-pages yacd
 }
 
-download_mosdns() {
+download_mosdns_v4() {
     DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/IrineSistiana/mosdns/releases | jq | grep browser_download_url | grep v4 | grep linux-amd64 | head -1 | awk '{print $2}' | tr -d '"')
     curl -fsS -OL "${DOWNLOAD_URL}"
-    mkdir -p mosdns
-    unzip -o mosdns-linux-amd64.zip -d mosdns
+    mkdir -p mosdns_v4
+    unzip -o mosdns-linux-amd64.zip -d mosdns_v4
+    rm -f mosdns-linux-amd64.zip
 }
+
+download_mosdns_v5() {
+    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/IrineSistiana/mosdns/releases | jq | grep browser_download_url | grep v5 | grep linux-amd64 | head -1 | awk '{print $2}' | tr -d '"')
+    curl -fsS -OL "${DOWNLOAD_URL}"
+    mkdir -p mosdns_v5
+    unzip -o mosdns-linux-amd64.zip -d mosdns_v5
+    rm -f mosdns-linux-amd64.zip
+}
+
 
 download_old() {
     DOWNLOAD_URL=$(curl -L -fsS "https://github.com/sempr/super-bundle/releases/latest" | grep "sha256sum.txt" | grep href | awk -F'"' '{print $2}')
@@ -39,7 +49,8 @@ download_all() {
     pushd tmp
     download_geodata
     download_clashmeta
-    download_mosdns
+    download_mosdns_v4
+    download_mosdns_v5
     download_yacd
     popd
 
@@ -52,9 +63,13 @@ download_all() {
     ln -sf yacd data/www/clash
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
+
+    ./tmp/mosdns_v4/mosdns v2dat unpack-ip -o data/etc/geodata data/etc/geodata/geoip.dat
+    ./tmp/mosdns_v4/mosdns v2dat unpack-domain -o data/etc/geodata data/etc/geodata/geosite.dat
+
     ln -sf /etc/geodata/geoip.dat data/etc/clash/
     ln -sf /etc/geodata/geosite.dat data/etc/clash/
-    mv tmp/{mosdns/mosdns,clash} data/usr/bin/
+    mv tmp/{mosdns_v5/mosdns,clash} data/usr/bin/
     chmod +x data/usr/bin/*
     rm -rf tmp/
 
@@ -81,6 +96,7 @@ EOF
     pushd data
     which strip >/dev/null 2>&1 && strip ./usr/bin/*
     which upx >/dev/null 2>&1 && upx ./usr/bin/*
+    ln -sf mosdns ./usr/bin/mosdns-v5
     tar cvzf ../data.tar.gz ./*
     popd
     echo 2.0 >debian-binary
@@ -93,7 +109,7 @@ pack_clean() {
 }
 
 prepare() {
-    sudo apt update && sudo apt install -y upx jq
+    which apt && sudo apt update && sudo apt install -y upx jq
 }
 
 move_to_publish() {
