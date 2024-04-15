@@ -8,12 +8,18 @@ download_geodata() {
     curl -OL https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
 }
 
+download_hysteria() {
+    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/HyNetwork/hysteria/releases/latest |jq| grep browser_download_url | grep hysteria-linux-amd64 | head -1 |awk '{print $2}' | tr -d '"')
+    curl -fsS -OL "${DOWNLOAD_URL}"
+    mv hysteria-linux-amd64 hysteria
+}
+
 download_clashmeta() {
     DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/MetaCubeX/Clash.Meta/releases/latest  | jq |grep linux-amd64-v | grep browser_download_url | grep gz | awk '{print $2}' | tr -d '"')
     curl -L -o clash.gz "${DOWNLOAD_URL}"
     gunzip clash.gz
     chmod +x clash
-    mv $(find -name clash |head -1) .
+#    mv $(find -name clash |head -1) .
 }
 
 download_yacd() {
@@ -48,6 +54,7 @@ download_all() {
     mkdir -p tmp
     pushd tmp
     download_geodata
+    download_hysteria
     download_clashmeta
     download_mosdns_v4
     download_mosdns_v5
@@ -69,11 +76,12 @@ download_all() {
 
     ln -sf /etc/geodata/geoip.dat data/etc/clash/
     ln -sf /etc/geodata/geosite.dat data/etc/clash/
-    mv tmp/{mosdns_v5/mosdns,clash} data/usr/bin/
+    mv tmp/{mosdns_v5/mosdns,clash,hysteria} data/usr/bin/
     chmod +x data/usr/bin/*
     rm -rf tmp/
 
-    tree data/
+    tree -L 2 data/usr/bin/
+    tree -L 1 data/etc/
     download_old
     sha256sum data/usr/bin/* >sha256sum.txt
 }
