@@ -32,7 +32,8 @@ download_v2dat() {
     DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/sempr/v2dat/releases| jq | grep browser_download_url | head -n1| awk '{print $2}' | tr -d '"')
     curl -fsS -OL "${DOWNLOAD_URL}"
     chmod +x v2dat
-    mv v2dat /usr/bin
+    mkdir -p /tmp/bin/
+    mv v2dat /tmp/bin/
 }
 
 download_mosdns_v5() {
@@ -70,8 +71,8 @@ download_all() {
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
 
-    /usr/bin/v2dat unpack-ip -o data/etc/geodata data/etc/geodata/geoip.dat
-    /usr/bin/v2dat unpack-domain -o data/etc/geodata data/etc/geodata/geosite.dat
+    /tmp/bin/v2dat unpack-ip -o data/etc/geodata data/etc/geodata/geoip.dat
+    /tmp/bin/v2dat unpack-domain -o data/etc/geodata data/etc/geodata/geosite.dat
 
     ln -sf /etc/geodata/geoip.dat data/etc/clash/
     ln -sf /etc/geodata/geosite.dat data/etc/clash/
