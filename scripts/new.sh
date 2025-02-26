@@ -28,12 +28,11 @@ download_yacd() {
   mv Yacd-meta-gh-pages yacd
 }
 
-download_mosdns_v4() {
-    DOWNLOAD_URL=$(curl -fsS -L https://api.github.com/repos/IrineSistiana/mosdns/releases | jq | grep browser_download_url | grep v4 | grep linux-amd64 | head -1 | awk '{print $2}' | tr -d '"')
+download_v2dat() {
+    DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/sempr/v2dat/releases| jq | grep browser_download_url | head -n1| awk '{print $2}' | tr -d '"')
     curl -fsS -OL "${DOWNLOAD_URL}"
-    mkdir -p mosdns_v4
-    unzip -o mosdns-linux-amd64.zip -d mosdns_v4
-    rm -f mosdns-linux-amd64.zip
+    chmod +x v2dat
+    mv v2dat /usr/bin
 }
 
 download_mosdns_v5() {
@@ -56,7 +55,7 @@ download_all() {
     download_geodata
     download_hysteria
     download_clashmeta
-    download_mosdns_v4
+    download_v2dat
     download_mosdns_v5
     download_yacd
     popd
@@ -71,8 +70,8 @@ download_all() {
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
 
-    ./tmp/mosdns_v4/mosdns v2dat unpack-ip -o data/etc/geodata data/etc/geodata/geoip.dat
-    ./tmp/mosdns_v4/mosdns v2dat unpack-domain -o data/etc/geodata data/etc/geodata/geosite.dat
+    /usr/bin/v2dat unpack-ip -o data/etc/geodata data/etc/geodata/geoip.dat
+    /usr/bin/v2dat unpack-domain -o data/etc/geodata data/etc/geodata/geosite.dat
 
     ln -sf /etc/geodata/geoip.dat data/etc/clash/
     ln -sf /etc/geodata/geosite.dat data/etc/clash/
