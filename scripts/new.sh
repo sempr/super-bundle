@@ -71,8 +71,8 @@ download_all() {
 
     mv tmp/{geoip,geosite}.dat data/etc/geodata/
 
-    /tmp/bin/v2dat unpack-ip -o data/etc/geodata data/etc/geodata/geoip.dat
-    /tmp/bin/v2dat unpack-domain -o data/etc/geodata data/etc/geodata/geosite.dat
+    /tmp/bin/v2dat unpack geoip -o data/etc/geodata data/etc/geodata/geoip.dat
+    /tmp/bin/v2dat unpack geosite -o data/etc/geodata data/etc/geodata/geosite.dat
 
     ln -sf /etc/geodata/geoip.dat data/etc/clash/
     ln -sf /etc/geodata/geosite.dat data/etc/clash/
@@ -104,7 +104,6 @@ EOF
     pushd data
     which strip >/dev/null 2>&1 && strip ./usr/bin/*
     which upx >/dev/null 2>&1 && upx ./usr/bin/*
-    ln -sf mosdns ./usr/bin/mosdns-v5
     tar cvzf ../data.tar.gz ./*
     popd
     echo 2.0 >debian-binary
