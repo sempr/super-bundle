@@ -46,8 +46,8 @@ download_mosdns_v5() {
 
 
 download_old() {
-    DOWNLOAD_URL=$(curl -L -fsS "https://github.com/sempr/super-bundle/releases/latest" | grep "sha256sum.txt" | grep href | awk -F'"' '{print $2}')
-    curl -fsS -L -o old.sha256sum.txt "https://github.com${DOWNLOAD_URL}"
+    DOWNLOAD_URL=$(curl -L -fsS "https://api.github.com/repos/sempr/super-bundle/releases" |grep "sha256sum.txt" | grep "browser_download_url" | head -n1 |awk '{print $2}' | tr -d '"')
+    curl -fsS -L -o old.sha256sum.txt ${DOWNLOAD_URL}
 }
 
 download_all() {
