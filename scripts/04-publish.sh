@@ -125,7 +125,12 @@ echo "Created directory: $PUBLISH_DIR"
 echo "Copying files to publish directory..."
 cp -v "$IPK_PACKAGE" "$PUBLISH_DIR/"
 cp -v "$APK_PACKAGE" "$PUBLISH_DIR/"
+
+# Copy comprehensive checksum file and rename to sha256sum.txt for consistent naming
 cp -v "$FINAL_CHECKSUM_FILE" "$PUBLISH_DIR/"
+cp -v "$FINAL_CHECKSUM_FILE" "$PUBLISH_DIR/sha256sum.txt"
+echo "Renamed $FINAL_CHECKSUM_FILE to sha256sum.txt for release"
+
 cp -v "$MANIFEST_FILE" "$PUBLISH_DIR/"
 
 # Optionally copy old checksums for comparison if they exist

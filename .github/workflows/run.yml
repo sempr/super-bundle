@@ -27,19 +27,34 @@ jobs:
         shell: bash
       - name: Check if release needed
         run: |
-          # Check if old and new checksums are different
-          if [ -f "scripts/sha256sum.txt" ] && [ -f "scripts/old.sha256sum.txt" ]; then
-            if diff -q scripts/sha256sum.txt scripts/old.sha256sum.txt >/dev/null 2>&1; then
-              echo "No changes detected - skipping publication"
+          cd scripts
+          # Get only data/* entries for comparison (only data directory matters)
+          echo "Extracting data/ directory checksums..."
+          if [ -f "sha256sum.txt" ]; then
+            grep "^data/" sha256sum.txt > new_data_checksums.txt || echo "No data/ entries found in checksum file"
+          else
+            echo "Warning: sha256sum.txt not found"
+            touch new_data_checksums.txt
+          fi
+
+          # Compare data directory checksums
+          if [ -f "new_data_checksums.txt" ] && [ -f "old.sha256sum.txt" ]; then
+            if diff -q new_data_checksums.txt old.sha256sum.txt >/dev/null 2>&1; then
+              echo "No changes in data/ directory - skipping publication"
               echo "NEED_PUBLISH=false" >> $GITHUB_ENV
             else
-              echo "Changes detected - creating new release"
+              echo "Changes detected in data/ directory - creating new release"
               echo "NEED_PUBLISH=true" >> $GITHUB_ENV
+
+              # Show what changed
+              echo "Differences in data/ directory:"
+              diff new_data_checksums.txt old.sha256sum.txt || true
             fi
           else
             echo "No comparison available - creating new release"
             echo "NEED_PUBLISH=true" >> $GITHUB_ENV
           fi
+        shell: bash
       - name: Set release info
         if: env.NEED_PUBLISH == 'true'
         run: |

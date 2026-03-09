@@ -58,7 +58,7 @@ download_old_checksums() {
     echo "Downloading old checksums..."
     DOWNLOAD_URL=$(curl -L -fsS "https://api.github.com/repos/sempr/super-bundle/releases" | grep "sha256sum.txt" | grep "browser_download_url" | head -n1 | awk '{print $2}' | tr -d '"')
     if [ -n "$DOWNLOAD_URL" ]; then
-        curl -fsS -L -o ../../old.sha256sum.txt ${DOWNLOAD_URL}
+        curl -fsS -L -o old.sha256sum.txt ${DOWNLOAD_URL}
     fi
 }
 
