@@ -17,6 +17,9 @@ echo "==================================="
 # Get timestamp for consistent naming
 TIMESTAMP=$(date +%Y%m%d%H%M)
 
+# Get timestamp for consistent naming
+TIMESTAMP=$(date +%Y%m%d%H%M)
+
 # Configuration
 PUBLISH_DIR="/tmp/pub"
 CHECKSUM_FILE="sha256sum.txt"
