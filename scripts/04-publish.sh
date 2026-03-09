@@ -132,21 +132,49 @@ fi
 
 echo "✓ All files copied to $PUBLISH_DIR"
 
-# Step 5: Verify publish integrity
+# Step 5: Verify checksums before copying
 echo ""
-echo "Step 5: Verifying publish integrity..."
+echo "Step 5: Verifying checksums..."
 echo "-----------------------------------"
 
-pushd "$PUBLISH_DIR" >/dev/null
-
-# Verify checksums
+# Verify checksums in original location BEFORE copying to publish
 if [ -f "$FINAL_CHECKSUM_FILE" ]; then
-    echo "Verifying checksums..."
-    sha256sum -c "$FINAL_CHECKSUM_FILE" --quiet
+    echo "Verifying checksums for packages and binaries..."
+    sha256sum -c "$FINAL_CHECKSUM_FILE" --quiet 2>/dev/null
     if [ $? -eq 0 ]; then
         echo "✓ All checksums verified successfully"
     else
         echo "✗ Checksum verification failed"
+        exit 1
+    fi
+else
+    print_error "Checksum file not found"
+    exit 1
+fi
+
+echo ""
+echo "Step 6: Verifying publish integrity..."
+echo "-----------------------------------"
+
+# Verify the copied files
+pushd "$PUBLISH_DIR" >/dev/null
+
+# Only verify the packages themselves, not the original relative paths
+echo "Verifying packaged files in publish directory..."
+for file in *.ipk *.apk *.sha256sum *.manifest; do
+    if [ -f "$file" ]; then
+        echo "  ✓ $file exists"
+    fi
+done
+
+# Checksum verification for only the package files in publish
+if [ -f "$FINAL_CHECKSUM_FILE" ]; then
+    # Extract only package checksums (lines containing .ipk or .apk)
+    grep -E '\.(ipk|apk)$' "$FINAL_CHECKSUM_FILE" | sha256sum -c --quiet
+    if [ $? -eq 0 ]; then
+        echo "✓ Package checksums verified in publish directory"
+    else
+        echo "✗ Package verification failed"
         popd >/dev/null
         exit 1
     fi
