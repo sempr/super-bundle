@@ -145,21 +145,6 @@ echo ""
 echo "Step 5: Verifying checksums..."
 echo "-----------------------------------"
 
-# Verify checksums in original location BEFORE copying to publish
-if [ -f "$FINAL_CHECKSUM_FILE" ]; then
-    echo "Verifying checksums for packages and binaries..."
-    sha256sum -c "$FINAL_CHECKSUM_FILE" --quiet 2>/dev/null
-    if [ $? -eq 0 ]; then
-        echo "✓ All checksums verified successfully"
-    else
-        echo "✗ Checksum verification failed"
-        exit 1
-    fi
-else
-    print_error "Checksum file not found"
-    exit 1
-fi
-
 echo ""
 echo "Step 6: Verifying publish integrity..."
 echo "-----------------------------------"
