@@ -17,12 +17,22 @@ jobs:
         with:
           ref: master
       - name: tree
+        run: tree
+      - name: Set release info
         run: |
           echo "TAG_NAME=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
           echo "RELEASE_NAME=Released on $(date +%Y%m%d%H%M)" >> $GITHUB_ENV
-          tree
-      - name: build bundle
-        run: bash -x scripts/new.sh
+      - name: Download components
+        run: bash -x scripts/01-download.sh
+        shell: bash
+      - name: Prepare files
+        run: bash -x scripts/02-prepare.sh
+        shell: bash
+      - name: Create packages
+        run: bash -x scripts/03-package.sh
+        shell: bash
+      - name: Prepare for publish
+        run: bash -x scripts/04-publish.sh
         shell: bash
       - name: check new
         run: |
