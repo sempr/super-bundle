@@ -42,9 +42,9 @@ prepare_files() {
 
     # Unpack geodata files using v2dat
     echo "Unpacking geodata files with v2dat..."
-    if [ -f "/tmp/bin/v2dat" ] && [ -f "data/etc/geodata/geoip.dat" ]; then
-        /tmp/bin/v2dat unpack geoip -o data/etc/geodata data/etc/geodata/geoip.dat
-        /tmp/bin/v2dat unpack geosite -o data/etc/geodata data/etc/geodata/geosite.dat
+    if [ -f "./tmp/bin/v2dat" ] && [ -f "data/etc/geodata/geoip.dat" ]; then
+        ./tmp/bin/v2dat unpack geoip -o data/etc/geodata data/etc/geodata/geoip.dat
+        ./tmp/bin/v2dat unpack geosite -o data/etc/geodata data/etc/geodata/geosite.dat
     else
         echo "Warning: v2dat or geodata files not found, skipping unpack"
     fi
